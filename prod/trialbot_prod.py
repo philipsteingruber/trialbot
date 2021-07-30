@@ -1,9 +1,11 @@
-import traceback
 import json
+import traceback
+
 import discord
 import discord.utils
 
 trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging']
+
 
 class TrialBot(discord.Client):
     def __init__(self):
@@ -55,12 +57,10 @@ class TrialBot(discord.Client):
                 else:
                     await channel.send('User {} already registered.'.format(author.name))
 
-
             elif content.startswith('!users'):
                 # print('!users')
                 # await message.channel.send(content='hello')
                 await channel.send(self.users_as_str())
-
 
             elif content.startswith('!complete'):
                 trial = content.split(' ')[1]
@@ -75,7 +75,6 @@ class TrialBot(discord.Client):
                     else:
                         self.save_users_to_file()
 
-
             elif content.startswith('!reset'):
                 try:
                     self.registered_users[str(author.id)] = trials.copy()
@@ -84,14 +83,12 @@ class TrialBot(discord.Client):
                 except Exception:
                     await channel.send('User not registered. Register with !register first.')
 
-
             elif content.startswith('!piercing'):
                 mentions = self.users_who_need_trial(trial='piercing', author=author)
                 if mentions:
                     await channel.send('{} {} has {} available. Remember to mark the trial completed using "!complete piercing" when done.'.format(' '.join(mentions), author.name, 'piercing truth'))
                 else:
                     await channel.sent('Noone else needs {}.'.format('piercing'))
-
 
             elif content.startswith('!swirling'):
                 mentions = self.users_who_need_trial(trial='swirling', author=author)
@@ -128,26 +125,11 @@ class TrialBot(discord.Client):
                 else:
                     await channel.sent('Noone else needs {}.'.format('stinging'))
 
-
             elif content.startswith('!fullreset'):
                 for user_id, uncompleted_trials in self.registered_users.items():
                     self.registered_users[user_id] = trials.copy()
                 self.save_users_to_file()
                 await channel.send('All users have been reset.')
-
-
-            elif content.startswith('!ping'):
-                userid = 214080641292042240
-                print(list(self.get_all_members()))
-
-                for member in self.get_all_members():
-                    print(member.id)
-
-                user_object = discord.utils.get(self.get_all_members(), id=869588693327953991)
-                print(type(user_object))
-                print(user_object.mention)
-                await channel.send('<@869588693327953991> pong')
-
 
             elif content.startswith('!help'):
                 await channel.send('!register to register yourself.'
