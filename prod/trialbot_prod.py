@@ -3,7 +3,6 @@ import json
 import discord
 import discord.utils
 
-token = 'ODY5NTg4NjkzMzI3OTUzOTkx.YQAZlA.4DtzC-XNm8vrnl5fp1w56dKTlv0'
 trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging']
 
 class TrialBot(discord.Client):
@@ -158,5 +157,7 @@ class TrialBot(discord.Client):
                                    '\n!reset to mark all trials uncompleted for yourself.')
 
 
+with open('config.txt', mode='r') as file:
+    token = file.read()
 client = TrialBot()
 client.run(token)
