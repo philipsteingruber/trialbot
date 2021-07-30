@@ -1,1 +1,0 @@
-{"214080641292042240": ["swirling", "stinging"], "102151097396793344": ["stinging"], "254987850926391306": ["piercing", "swirling", "crippling", "burning", "lingering", "stinging"], "259409316090478592": ["swirling", "crippling"]}
