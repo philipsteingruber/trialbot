@@ -16,8 +16,10 @@ class TrialBot(discord.Client):
         with open(filename, mode='r') as file:
             try:
                 self.registered_users = json.load(file)
+                print('Users loaded from JSON. Registered users: {}'.format(self.registered_users.keys()))
             except json.decoder.JSONDecodeError:
                 self.registered_users = {}
+                print('No registered users found.')
         super(TrialBot, self).__init__(intents=discord.Intents.all())
 
     def users_as_str(self):
@@ -60,6 +62,7 @@ class TrialBot(discord.Client):
                         await channel.send('Registration of user {} failed. Try again.'.format(author.name))
                     else:
                         await channel.send('User {} registered successfully.'.format(author.name))
+                        print('Registering user {}'.format(author.name))
                 else:
                     await channel.send('User {} already registered.'.format(author.name))
 
@@ -67,6 +70,7 @@ class TrialBot(discord.Client):
                 # print('!users')
                 # await message.channel.send(content='hello')
                 await channel.send(self.users_as_str())
+                print('Listing registered users')
 
             elif content.startswith('!complete'):
                 trial = content.split(' ')[1]
@@ -76,6 +80,7 @@ class TrialBot(discord.Client):
                     try:
                         self.registered_users[str(author.id)].remove(trial)
                         await channel.send('{} has now completed {}'.format(author.name, trial))
+                        print('Marking {} as completed for {}'.format(trial, author.name))
                     except ValueError:
                         await channel.send('{} has already completed {}.'.format(author.name, trial))
                     else:
@@ -86,6 +91,7 @@ class TrialBot(discord.Client):
                     self.registered_users[str(author.id)] = trials.copy()
                     self.save_users_to_file()
                     await channel.send('All trials uncompleted for {}'.format(author.name))
+                    print('Resetting completed trials for {}'.format(author.name))
                 except Exception:
                     await channel.send('User not registered. Register with !register first.')
 
