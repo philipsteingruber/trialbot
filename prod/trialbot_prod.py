@@ -1,4 +1,5 @@
 import json
+import os
 import traceback
 
 import discord
@@ -141,7 +142,10 @@ class TrialBot(discord.Client):
                                    '\n!reset to mark all trials uncompleted for yourself.')
 
 
-with open('config.txt', mode='r') as file:
-    token = file.read()
+try:
+    with open('config.txt', mode='r') as file:
+        token = file.read()
+except FileNotFoundError:
+    token = os.environ.get(key='TOKEN')
 client = TrialBot()
 client.run(token)
