@@ -4,6 +4,8 @@ import traceback
 
 import discord
 import discord.utils
+from b2sdk.v2 import B2Api
+from b2sdk.v2 import InMemoryAccountInfo
 
 trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging']
 
@@ -11,15 +13,27 @@ trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging
 class TrialBot(discord.Client):
     def __init__(self):
         filename = 'users_json.txt'
-        if not os.path.exists(filename):
-            open(filename, mode='w').close()
-        with open(filename, mode='r') as file:
-            try:
+        if local:
+            if not os.path.exists(filename):
+                open(filename, mode='w').close()
+            with open(filename, mode='r') as file:
+                try:
+                    self.registered_users = json.load(file)
+                    print('Users loaded from JSON. Registered users: {}'.format(self.registered_users))
+                except json.decoder.JSONDecodeError:
+                    self.registered_users = {}
+                    print('No registered users found.')
+        else:
+            info = InMemoryAccountInfo()
+            b2_api = B2Api(info)
+            b2_api.authorize_account("production", application_key_id, application_key)
+            bucket = b2_api.get_bucket_by_name(bucket_name='discord-trialbot')
+            bucket.download_file_by_name(file_name=filename).save_to(path_=filename)
+            self.bucket = bucket
+            with open(filename, mode='r') as file:
                 self.registered_users = json.load(file)
-                print('Users loaded from JSON. Registered users: {}'.format(self.registered_users.keys()))
-            except json.decoder.JSONDecodeError:
-                self.registered_users = {}
-                print('No registered users found.')
+                print('Users loaded from Backblaze. Registered users: {}'.format(self.registered_users))
+
         super(TrialBot, self).__init__(intents=discord.Intents.all())
 
     def users_as_str(self):
@@ -36,6 +50,8 @@ class TrialBot(discord.Client):
     def save_users_to_file(self):
         with open('users_json.txt', mode='w') as file:
             json.dump(fp=file, obj=self.registered_users)
+        if not local:
+            self.bucket.upload_local_file(local_file='users_json.txt', file_name='users_json.txt')
 
     def users_who_need_trial(self, trial, author):
         mentions = []
@@ -154,7 +170,13 @@ class TrialBot(discord.Client):
 try:
     with open('config.txt', mode='r') as file:
         token = file.read()
+        local = True
 except FileNotFoundError:
     token = os.environ.get(key='TOKEN')
+    application_key_id = os.environ.get(key='APPLICATION_KEY_ID')
+    application_key = os.environ.get(key='APPLICATION_KEY')
+    if not token or not application_key_id or not application_key:
+        raise ValueError
+    local = False
 client = TrialBot()
 client.run(token)

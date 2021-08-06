@@ -1,2 +1,4 @@
 discord==1.7.3
 discord.py==1.7.3
+b2sdk.v2==1.11.0
+b2sdk==1.11.0
