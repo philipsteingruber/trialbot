@@ -10,7 +10,10 @@ trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging
 
 class TrialBot(discord.Client):
     def __init__(self):
-        with open('users_json.txt', mode='r+') as file:
+        filename = 'users_json.txt'
+        if not os.path.exists(filename):
+            open(filename, mode='w').close()
+        with open(filename, mode='r') as file:
             try:
                 self.registered_users = json.load(file)
             except json.decoder.JSONDecodeError:
