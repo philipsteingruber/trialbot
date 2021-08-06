@@ -50,8 +50,10 @@ class TrialBot(discord.Client):
     def save_users_to_file(self):
         with open('users_json.txt', mode='w') as file:
             json.dump(fp=file, obj=self.registered_users)
+            print('Successfully saved to local file')
         if not local:
             self.bucket.upload_local_file(local_file='users_json.txt', file_name='users_json.txt')
+            print('Successfully saved to Backblaze')
 
     def users_who_need_trial(self, trial, author):
         mentions = []
