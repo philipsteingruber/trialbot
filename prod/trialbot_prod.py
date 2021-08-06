@@ -20,6 +20,8 @@ class TrialBot(discord.Client):
         user_list = []
         for user_id, uncompleted_trials in self.registered_users.items():
             user_list.append('{} has yet to complete: {}'.format(self.get_user_from_id(user_id).name, ', '.join(uncompleted_trials)))
+        if not user_list:
+            return 'No registered users'
         return '\n'.join(user_list)
 
     def get_user_from_id(self, id):
