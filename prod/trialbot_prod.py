@@ -9,12 +9,12 @@ trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging
 
 class TrialBot(discord.Client):
     def __init__(self):
-        with open('users_json.txt', mode='r') as file:
+        with open('users_json.txt', mode='r+') as file:
             try:
                 self.registered_users = json.load(file)
             except json.decoder.JSONDecodeError:
                 self.registered_users = {}
-        super(TrialBot, self).__init__(intents = discord.Intents.all())
+        super(TrialBot, self).__init__(intents=discord.Intents.all())
 
     def users_as_str(self):
         user_list = []
