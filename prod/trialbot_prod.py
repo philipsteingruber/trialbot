@@ -13,14 +13,13 @@ trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging
 class TrialBot(discord.Client):
     def __init__(self):
         filename = 'users_json.txt'
-        super(TrialBot, self).__init__(intents=discord.Intents.all())
         if local:
             if not os.path.exists(filename):
                 open(filename, mode='w').close()
             with open(filename, mode='r') as file:
                 try:
                     self.registered_users = json.load(file)
-                    print('Users loaded from JSON. Registered users: {}'.format(self.registered_users))
+                    print('Users loaded from JSON.')
                 except json.decoder.JSONDecodeError:
                     self.registered_users = {}
                     print('No registered users found.')
@@ -33,9 +32,9 @@ class TrialBot(discord.Client):
             self.bucket = bucket
             with open(filename, mode='r') as file:
                 self.registered_users = json.load(file)
-                print('Users loaded from Backblaze. Registered users: {}'.format(
-                    ', '.join(list(map(self.get_user_from_id, self.registered_users.keys())))))
+                print('Users loaded from Backblaze.')
 
+        super(TrialBot, self).__init__(intents=discord.Intents.all())
 
     def users_as_str(self):
         user_list = []
@@ -64,6 +63,7 @@ class TrialBot(discord.Client):
         return mentions
 
     async def on_ready(self):
+        print('Registered users:', [user.name for user in list(map(self.get_user_from_id, self.registered_users.keys()))])
         print('Bot initialized.')
 
     async def on_message(self, message):
