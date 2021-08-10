@@ -63,7 +63,7 @@ class TrialBot(discord.Client):
         return mentions
 
     async def on_ready(self):
-        print('Registered users:', [user.name for user in list(map(self.get_user_from_id, self.registered_users.keys()))])
+        print('Registered users:', ', '.join([user.name for user in list(map(self.get_user_from_id, self.registered_users.keys()))]))
         print('Bot initialized.')
 
     async def on_message(self, message):
