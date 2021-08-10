@@ -13,6 +13,7 @@ trials = ['piercing', 'swirling', 'crippling', 'burning', 'lingering', 'stinging
 class TrialBot(discord.Client):
     def __init__(self):
         filename = 'users_json.txt'
+        super(TrialBot, self).__init__(intents=discord.Intents.all())
         if local:
             if not os.path.exists(filename):
                 open(filename, mode='w').close()
@@ -35,7 +36,6 @@ class TrialBot(discord.Client):
                 print('Users loaded from Backblaze. Registered users: {}'.format(
                     ', '.join(list(map(self.get_user_from_id, self.registered_users.keys())))))
 
-        super(TrialBot, self).__init__(intents=discord.Intents.all())
 
     def users_as_str(self):
         user_list = []
