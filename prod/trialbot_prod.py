@@ -32,7 +32,8 @@ class TrialBot(discord.Client):
             self.bucket = bucket
             with open(filename, mode='r') as file:
                 self.registered_users = json.load(file)
-                print('Users loaded from Backblaze. Registered users: {}'.format(self.registered_users))
+                print('Users loaded from Backblaze. Registered users: {}'.format(
+                    ', '.join(list(map(self.get_user_from_id, self.registered_users.keys())))))
 
         super(TrialBot, self).__init__(intents=discord.Intents.all())
 
